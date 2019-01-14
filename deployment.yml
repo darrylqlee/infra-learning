@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: didiset
+  labels:
+    colour: blue
+    name: Linda
+spec:
+  template:
+    metadata:
+      name: replicontainer
+      labels:
+        stone: opal
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx
+  replicas: 4
+  selector: 
+    matchLabels:
+      stone: opal
