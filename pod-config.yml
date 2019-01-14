@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: didipod
+  labels:
+    colour: pink
+    stone: opal
+spec:
+  containers:
+    - name: nginx-image
+      image: nginx
