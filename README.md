@@ -4,7 +4,6 @@ Repository for practice files.
 
 In progress:
 - Kubernetes
-- Git Commands
 
 Future courses:
 - Docker
