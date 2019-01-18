@@ -1,0 +1,263 @@
+## Host Aliases
+
+Host_Alias    LSACFS01 = nso-lsa01-cfs01a, nso-lsa01-cfs01b
+Host_Alias    LSARFS01 = nso-lsa01-rfs01a, nso-lsa01-rfs01b
+Host_Alias    LSARFS02 = nso-lsa01-rfs02a, nso-lsa01-rfs02b
+Host_Alias    LSARFS03 = nso-lsa01-rfs03a, nso-lsa01-rfs03b
+Host_Alias    LSARFS04 = nso-lsa01-rfs04a, nso-lsa01-rfs04b
+Host_Alias    LSARFS05 = nso-lsa01-rfs05a, nso-lsa01-rfs05b
+Host_Alias    LSARFS06 = nso-lsa01-rfs06a, nso-lsa01-rfs06b
+Host_Alias    LSARFS07 = nso-lsa01-rfs07a, nso-lsa01-rfs07b
+Host_Alias    LSARFS08 = nso-lsa01-rfs08a, nso-lsa01-rfs08b
+
+Host_Alias    JUMPHOST01 = jumphost01
+Host_Alias    JUMPHOST02 = jumphost02
+
+Host_Alias    NSOGOLDHA    =    nso-gold-ha01a, nso-gold-ha01b
+Host_Alias    NSOBASEMENTHA    =    nso-basement-ha01a, nso-basement-ha01b
+
+Host_Alias    NSOSITHA01    =    nso-sit-ha01a, nso-sit-ha01b
+
+Host_Alias    NSONETSIM    =    nso-netsim01, nso-netsim02
+
+
+
+#### Project Gold server 96gb RAM
+# d750390 Ymir, d880946 Kuriakose, d633427 Manas
+User_Alias      GOLDADMINS = d750390, d880946, d633427
+GOLDADMINS      NSOGOLDHA=(ALL)         NOPASSWD:ALL
+
+
+
+##### SIT admins
+# Anatha and Bijay
+#d861730 – Anantha
+#d877267 – Rajesh
+#d880947 – Bala
+#d857983 – Hari
+#d879901 – Girisha
+
+User_Alias      SITADMINS = d861730, d834623, d877267, d880947, d857983, d879901
+SITADMINS       NSOSITHA01=(ALL) NOPASSWD:ALL
+
+
+##########
+# NSO Admins
+# d722691 Hari Sudhakar
+# d785280 Gavin Lam
+User_Alias NSOADMINS = d785280, d722691, d750390
+NSOADMINS       NSOSITHA01=(ALL)       NOPASSWD:NSOADMIN
+
+
+##### Pronghorn
+# Simon Price d858345
+# Raja d816612
+# Dean d838928
+User_Alias PRONGHORNADMINS = d816612, d858345, d838928
+# Hosts
+Host_Alias    PRONGHORN      =    pronghorn01, pronghorn02, pronghorn03, pronghorn04, pronghorn05
+Host_Alias    PRONGHORNDB    =    pronghorndb01, pronghorndb02, pronghorndb03
+#
+# Pronghorn Admins can sudo on pronghorn and mongo servers
+PRONGHORNADMINS PRONGHORN=(ALL) NOPASSWD:ALL
+PRONGHORNADMINS PRONGHORNDB=(ALL) NOPASSWD:ALL
+
+# Raja and Simon have access to NSO on SIT01
+PRONGHORNADMINS NSOSITHA01=(ALL) NOPASSWD:NSOADMIN
+
+# Pronghorn Access via AD
+%phadmins       PRONGHORN=(ALL) NOPASSWD:ALL
+%phadmins       PRONGHORNDB=(ALL) NOPASSWD:ALL
+
+
+##########
+## Command Aliases
+## These are groups of related commands...
+
+# NSO Admin commands
+Cmnd_Alias NSOADMIN = /usr/bin/su - nsoadmin, /usr/bin/su nsoadmin, /usr/bin/su - nsoadmin -c *, /usr/sbin/service ncs *, /usr/bin/systemctl * ncs
+
+# User add commands
+Cmnd_Alias USERADD = /usr/sbin/adduser *, /usr/sbin/useradd *, /usr/sbin/usermod *, /usr/bin/chsh *, /usr/bin/chfn *
+
+# User delete commands
+Cmnd_Alias USERDEL = /usr/sbin/userdel *
+
+
+# Defaults specification
+
+#
+# Refuse to run if unable to disable echo on the tty.
+#
+Defaults   !visiblepw
+
+#
+# Preserving HOME has security implications since many programs
+# use it when searching for configuration files. Note that HOME
+# is already set when the the env_reset option is enabled, so
+# this option is only effective for configurations where either
+# env_reset is disabled or HOME is present in the env_keep list.
+#
+Defaults    always_set_home
+
+Defaults    env_reset
+Defaults    env_keep =  "COLORS DISPLAY HOSTNAME HISTSIZE KDEDIR LS_COLORS"
+Defaults    env_keep += "MAIL PS1 PS2 QTDIR USERNAME LANG LC_ADDRESS LC_CTYPE"
+Defaults    env_keep += "LC_COLLATE LC_IDENTIFICATION LC_MEASUREMENT LC_MESSAGES"
+Defaults    env_keep += "LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE"
+Defaults    env_keep += "LC_TIME LC_ALL LANGUAGE LINGUAS _XKB_CHARSET XAUTHORITY"
+
+#
+# Adding HOME to env_keep may enable a user to run unrestricted
+# commands via sudo.
+#
+# Defaults   env_keep += "HOME"
+
+Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin
+
+## Next comes the main part: which users can run what software on
+## which machines (the sudoers file can be shared between multiple
+## systems).
+## Syntax:
+##
+##     user    MACHINE=COMMANDS
+##
+## The COMMANDS section may have other options added to it.
+##
+## Allow root to run any commands anywhere
+root    ALL=(ALL)     ALL
+# Rob Moss
+d231582    ALL=(ALL)     NOPASSWD:ALL
+# Simon Price
+#d858345 ALL=(ALL)     NOPASSWD:ALL
+# Vishnu Maya
+d886994    ALL=(ALL)     NOPASSWD:ALL
+# Manas Mohanty
+#d633427    ALL=(ALL)     NOPASSWD:ALL
+# Matt ODwyer
+d786925   ALL=(ALL)     NOPASSWD:ALL
+# Darryl Lee
+d838926   ALL=(ALL)    NOPASSWD:ALL
+
+
+##########
+## Sysadmins
+%sysadmins              ALL=(ALL)       NOPASSWD:ALL
+
+
+
+########
+# NSO Admins per group membership
+%ncsadmin_cfs01    LSACFS01 = NOPASSWD:NSOADMIN
+%ncsadmin_rfs01    LSARFS01 = NOPASSWD:NSOADMIN
+%ncsadmin_rfs02    LSARFS02 = NOPASSWD:NSOADMIN
+%ncsadmin_rfs03    LSARFS03 = NOPASSWD:NSOADMIN
+%ncsadmin_rfs04    LSARFS04 = NOPASSWD:NSOADMIN
+%ncsadmin_rfs05    LSARFS05 = NOPASSWD:NSOADMIN
+%ncsadmin_rfs06    LSARFS06 = NOPASSWD:NSOADMIN
+%ncsadmin_rfs07    LSARFS07 = NOPASSWD:NSOADMIN
+%ncsadmin_rfs08    LSARFS08 = NOPASSWD:NSOADMIN
+%ncsadmin_gold01   NSOGOLDHA = NOPASSWD:NSOADMIN
+%ncsadmin_sitha01  NSOSITHA01 = NOPASSWD:NSOADMIN
+
+
+
+
+# Reshmi d867856
+d867856    LSACFS01 = NOPASSWD:NSOADMIN
+d867856    LSARFS01 = NOPASSWD:NSOADMIN
+d867856    LSARFS02 = NOPASSWD:NSOADMIN
+d867856    NSONETSIM = NOPASSWD:NSOADMIN
+#d867856    JUMPHOST02 = NOPASSWD:ALL
+
+
+# Ymir d750390
+d750390    LSACFS01 = NOPASSWD:NSOADMIN
+d750390    LSARFS01 = NOPASSWD:NSOADMIN
+d750390    LSARFS02 = NOPASSWD:NSOADMIN
+d750390    LSARFS03 = NOPASSWD:NSOADMIN
+d750390    LSARFS04 = NOPASSWD:NSOADMIN
+d750390    LSARFS05 = NOPASSWD:NSOADMIN
+d750390    LSARFS06 = NOPASSWD:NSOADMIN
+d750390    LSARFS07 = NOPASSWD:NSOADMIN
+d750390    LSARFS08 = NOPASSWD:NSOADMIN
+d750390 NSOBASEMENTHA = NOPASSWD:NSOADMIN
+d273436 NSOGOLDHA = NOPASSWD:NSOADMIN
+
+
+# Krishna d273436
+d273436    LSACFS01 = NOPASSWD:NSOADMIN
+d273436    LSARFS01 = NOPASSWD:NSOADMIN
+d273436    LSARFS02 = NOPASSWD:NSOADMIN
+d273436    LSARFS03 = NOPASSWD:NSOADMIN
+d273436    LSARFS04 = NOPASSWD:NSOADMIN
+d273436    LSARFS05 = NOPASSWD:NSOADMIN
+d273436    LSARFS06 = NOPASSWD:NSOADMIN
+d273436    LSARFS07 = NOPASSWD:NSOADMIN
+d273436    LSARFS08 = NOPASSWD:NSOADMIN
+d273436 NSOGOLDHA = NOPASSWD:NSOADMIN
+
+
+# Simon d858345
+d858345    LSACFS01 = NOPASSWD:NSOADMIN
+d858345    LSARFS01 = NOPASSWD:NSOADMIN
+d858345    LSARFS02 = NOPASSWD:NSOADMIN
+d858345    LSARFS03 = NOPASSWD:NSOADMIN
+d858345    LSARFS04 = NOPASSWD:NSOADMIN
+d858345    LSARFS05 = NOPASSWD:NSOADMIN
+d858345    LSARFS06 = NOPASSWD:NSOADMIN
+d858345    LSARFS07 = NOPASSWD:NSOADMIN
+d858345    LSARFS08 = NOPASSWD:NSOADMIN
+
+
+# Marcela d243589
+d243589    LSACFS01 = NOPASSWD:NSOADMIN
+d243589    LSARFS01 = NOPASSWD:NSOADMIN
+d243589    LSARFS02 = NOPASSWD:NSOADMIN
+d243589    LSARFS03 = NOPASSWD:NSOADMIN
+d243589    LSARFS04 = NOPASSWD:NSOADMIN
+d243589    LSARFS05 = NOPASSWD:NSOADMIN
+d243589    LSARFS06 = NOPASSWD:NSOADMIN
+d243589    LSARFS07 = NOPASSWD:NSOADMIN
+d243589    LSARFS08 = NOPASSWD:NSOADMIN
+d243589 NSOBASEMENTHA = NOPASSWD:NSOADMIN
+d273436 NSOGOLDHA = NOPASSWD:NSOADMIN
+
+
+# Clay d270897
+d270897    NSOSITHA01 = NOPASSWD:USERADD
+d270897    NSOSITHA01 = NOPASSWD:USERDEL
+
+# Harry c768990
+
+# Dave c809294
+
+# Manas d633427
+
+# Shilpa d867855
+
+# Adi d871664
+d871664 LSACFS01 = NOPASSWD:NSOADMIN
+d871664 LSARFS07 = NOPASSWD:NSOADMIN
+
+
+## Allows members of the 'sys' group to run networking, software,
+## service management apps and more.
+# %sys ALL = NETWORKING, SOFTWARE, SERVICES, STORAGE, DELEGATING, PROCESSES, LOCATE, DRIVERS
+
+## Allows people in group wheel to run all commands
+%wheel    ALL=(ALL)    ALL
+
+## Same thing without a password
+# %wheel    ALL=(ALL)    NOPASSWD: ALL
+
+## Allows members of the users group to mount and unmount the
+## cdrom as root
+# %users  ALL=/sbin/mount /mnt/cdrom, /sbin/umount /mnt/cdrom
+
+## Allows members of the users group to shutdown this system
+# %users  localhost=/sbin/shutdown -h now
+
+## Read drop-in files from /etc/sudoers.d (the # here does not mean a comment)
+#includedir /etc/sudoers.d
+
