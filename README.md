@@ -5,13 +5,16 @@ Repository for practice files.
 In progress:
 - Kubernetes
 - Shell Scripting
+- Python
+- Docker
 
 Future courses:
 - Docker
 - Ansible
 - Vagrant/Terraform
-- Python
 - Java
 - MongoDB
 - SQL Server
-- Possible automation scripts (make private)
+- MongoDB
+- Go
+- Possible automation scripts (private unfortunately)
